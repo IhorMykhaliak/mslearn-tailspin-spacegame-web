@@ -54,18 +54,18 @@ namespace TailSpin.SpaceGame.Web
         public Task<IEnumerable<T>> GetItemsAsync(
             Expression<Func<T, bool>> queryPredicate,
             Expression<Func<T, int>> orderDescendingPredicate,
-            int page = 1, int pageSize = 10
-        )
-        {
-            var result = _items.AsQueryable()
+            int page = 1,
+            int pageSize = 10)
+{
+            // make enumeratable
+
+            return Task<IEnumerable<T>>.FromResult(_items.AsQueryable()
                 .Where(queryPredicate) // filter
                 .OrderByDescending(orderDescendingPredicate) // sort
                 .Skip(page * pageSize) // find page
-                .Take(pageSize - 1) // take items
-                .AsEnumerable(); // make enumeratable
-
-            return Task<IEnumerable<T>>.FromResult(result);
-        }
+                .Take(pageSize) // take items
+                .AsEnumerable());
+}
 
         /// <summary>
         /// Retrieves the number of items that match the given query predicate.
